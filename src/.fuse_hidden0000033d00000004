@@ -1,22 +1,14 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import { Users, LayoutPanelLeft, Rocket, Check, Folder, Code2, Terminal, Bot, Cpu, Boxes, X } from 'lucide-react';
+import { Users, LayoutPanelLeft, Rocket, Check, Folder, Code2, Terminal, Bot, Cpu, Boxes } from 'lucide-react';
 import { SiClaude, SiGooglegemini, SiOpenai } from 'react-icons/si';
 import { motion } from 'motion/react';
 
-const DEFAULT_SITE_URL = 'https://agentmux.reviate0.com';
-const getInstallScriptUrl = () => {
-  const origin = typeof window !== 'undefined' ? window.location.origin : DEFAULT_SITE_URL;
-  return `${origin}/install.sh`;
-};
-
 const InstallCommand = () => {
   const [copied, setCopied] = useState(false);
-  const installScriptUrl = getInstallScriptUrl();
-  const installCommand = `curl -fsSL ${installScriptUrl} | bash`;
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(installCommand);
+    navigator.clipboard.writeText('curl -fsSL https://agentmux.reviate0.com/install.sh | bash');
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   };
@@ -25,7 +17,7 @@ const InstallCommand = () => {
     <div className="bg-zinc-900 border border-zinc-700 rounded-lg px-5 py-3 flex items-center justify-between font-mono text-sm max-w-xl mx-auto w-full">
       <div className="flex items-center gap-3 overflow-x-auto text-zinc-200 whitespace-nowrap scrollbar-hide">
         <span className="text-green-400 select-none">$</span>
-        <span>{installCommand}</span>
+        <span>curl -fsSL https://agentmux.reviate0.com/install.sh | bash</span>
       </div>
       <button
         onClick={handleCopy}
@@ -37,26 +29,11 @@ const InstallCommand = () => {
   );
 };
 
-const WaitlistModal = () => {
-  const [isOpen, setIsOpen] = useState(false);
+const WaitlistForm = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
-
-  const openModal = () => {
-    setIsOpen(true);
-    setStatus("idle");
-    setMessage("");
-  };
-
-  const closeModal = () => {
-    setIsOpen(false);
-    setName("");
-    setEmail("");
-    setStatus("idle");
-    setMessage("");
-  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -92,101 +69,47 @@ const WaitlistModal = () => {
   };
 
   return (
-    <>
+    <form onSubmit={handleSubmit} className="space-y-3 relative z-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <label className="block">
+          <span className="sr-only">Name</span>
+          <input
+            type="text"
+            name="name"
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+            required
+            minLength={2}
+            placeholder="Your name"
+            className="w-full bg-zinc-950 border border-zinc-700 text-zinc-100 font-mono text-sm rounded px-3 py-2.5 outline-none focus:border-green-400/70 placeholder:text-zinc-500"
+          />
+        </label>
+        <label className="block">
+          <span className="sr-only">Email</span>
+          <input
+            type="email"
+            name="email"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+            required
+            placeholder="Email address"
+            className="w-full bg-zinc-950 border border-zinc-700 text-zinc-100 font-mono text-sm rounded px-3 py-2.5 outline-none focus:border-green-400/70 placeholder:text-zinc-500"
+          />
+        </label>
+      </div>
+
       <button
-        onClick={openModal}
-        className="w-full bg-green-400 text-zinc-950 font-mono font-bold px-6 py-3 rounded hover:bg-green-300 transition-colors"
+        type="submit"
+        disabled={status === "loading"}
+        className="w-full bg-green-400 text-zinc-950 font-mono font-bold px-6 py-3 rounded hover:bg-green-300 transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
       >
-        join waitlist
+        {status === "loading" ? "joining..." : "join waitlist"}
       </button>
 
-      {isOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) closeModal();
-          }}
-        >
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
-
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 10 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 10 }}
-            transition={{ duration: 0.2 }}
-            className="relative bg-zinc-900 border border-zinc-700 rounded-xl p-6 sm:p-8 w-full max-w-md shadow-2xl"
-          >
-            <button
-              onClick={closeModal}
-              className="absolute top-4 right-4 text-zinc-500 hover:text-white transition-colors"
-              aria-label="Close modal"
-            >
-              <X className="w-5 h-5" />
-            </button>
-
-            <h3 className="text-white font-mono font-bold text-lg mb-1">join the waitlist</h3>
-            <p className="text-zinc-400 text-sm font-mono mb-6">
-              Get early access to cloud sync and priority support.
-            </p>
-
-            {status === "success" ? (
-              <div className="text-center py-4">
-                <div className="w-12 h-12 rounded-full bg-green-400/10 flex items-center justify-center mx-auto mb-3">
-                  <Check className="w-6 h-6 text-green-400" />
-                </div>
-                <p className="text-green-300 font-mono text-sm">{message}</p>
-                <button
-                  onClick={closeModal}
-                  className="mt-4 text-zinc-400 hover:text-white text-xs font-mono transition-colors"
-                >
-                  close
-                </button>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                  <label className="block text-xs font-mono text-zinc-400 mb-1.5">Name</label>
-                  <input
-                    type="text"
-                    name="name"
-                    value={name}
-                    onChange={(event) => setName(event.target.value)}
-                    required
-                    minLength={2}
-                    placeholder="Your name"
-                    className="w-full bg-zinc-950 border border-zinc-700 text-zinc-100 font-mono text-sm rounded px-3 py-2.5 outline-none focus:border-green-400/70 placeholder:text-zinc-500"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-mono text-zinc-400 mb-1.5">Email</label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={email}
-                    onChange={(event) => setEmail(event.target.value)}
-                    required
-                    placeholder="Email address"
-                    className="w-full bg-zinc-950 border border-zinc-700 text-zinc-100 font-mono text-sm rounded px-3 py-2.5 outline-none focus:border-green-400/70 placeholder:text-zinc-500"
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={status === "loading"}
-                  className="w-full bg-green-400 text-zinc-950 font-mono font-bold px-6 py-3 rounded hover:bg-green-300 transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
-                >
-                  {status === "loading" ? "submitting..." : "submit"}
-                </button>
-
-                {status === "error" && (
-                  <p className="text-red-300 text-xs font-mono">{message}</p>
-                )}
-              </form>
-            )}
-          </motion.div>
-        </div>
-      )}
-    </>
+      <p className={`min-h-[1.25rem] text-xs font-mono ${status === "error" ? "text-red-300" : status === "success" ? "text-green-300" : "text-zinc-500"}`}>
+        {message || "Leave your name and email for early access."}
+      </p>
+    </form>
   );
 };
 
@@ -196,26 +119,26 @@ const SectionLabel = ({ text }: { text: string }) => (
   </div>
 );
 
-const cursorLogoUrl = "https://cursor.com/marketing-static/icon-512x512.png";
-const deepSeekLogoUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Deepseek-logo-icon.svg/3840px-Deepseek-logo-icon.svg.png";
-const copilotLogoUrl = "https://upload.wikimedia.org/wikipedia/en/thumb/a/aa/Microsoft_Copilot_Icon.svg/250px-Microsoft_Copilot_Icon.svg.png";
-const openCodeLogoUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCXTQ2dik4q2yKXpjl_1PlNO76VEPUNFlnTw&s";
+const cursorLogoUrl = new URL("./assets/cursor-cube-dark.svg", import.meta.url).href;
+const deepSeekLogoUrl = new URL("./assets/deepseek-icon.svg", import.meta.url).href;
+const copilotLogoUrl = new URL("./assets/copilot-icon.svg", import.meta.url).href;
+const openCodeLogoUrl = new URL("./assets/opencode-icon.svg", import.meta.url).href;
 
-const LogoImage = ({ src, className = "w-8 h-8 object-contain" }: { src: string; className?: string }) => (
+const LogoImage = ({ src, className = "w-5 h-5 object-contain" }: { src: string; className?: string }) => (
   <img src={src} alt="" aria-hidden="true" draggable="false" className={className} />
 );
 
 const OrbitingAgents = () => {
   // Inner ring: 3 agents, evenly spaced at 120° apart
   const ring1 = [
-    { name: 'Codex', icon: <SiOpenai className="w-8 h-8" />, color: 'text-white', bg: 'bg-teal-500/10', border: 'border-teal-500/30', glow: 'rgba(45,212,191,0.25)' },
-    { name: 'Gemini', icon: <SiGooglegemini className="w-8 h-8" />, color: 'text-white', bg: 'bg-sky-500/10', border: 'border-sky-500/30', glow: 'rgba(56,189,248,0.25)' },
+    { name: 'Codex', icon: <SiOpenai className="w-5 h-5" />, color: 'text-white', bg: 'bg-teal-500/10', border: 'border-teal-500/30', glow: 'rgba(45,212,191,0.25)' },
+    { name: 'Gemini', icon: <SiGooglegemini className="w-5 h-5" />, color: 'text-white', bg: 'bg-sky-500/10', border: 'border-sky-500/30', glow: 'rgba(56,189,248,0.25)' },
     { name: 'OpenCode', icon: <LogoImage src={openCodeLogoUrl} />, color: 'text-white', bg: 'bg-amber-500/10', border: 'border-amber-500/30', glow: 'rgba(251,191,36,0.25)' },
   ];
 
   // Outer ring: 4 agents, evenly spaced at 90° apart
   const ring2 = [
-    { name: 'Claude', icon: <SiClaude className="w-8 h-8" />, color: 'text-white', bg: 'bg-orange-500/10', border: 'border-orange-500/30', glow: 'rgba(251,146,60,0.25)' },
+    { name: 'Claude', icon: <SiClaude className="w-5 h-5" />, color: 'text-white', bg: 'bg-orange-500/10', border: 'border-orange-500/30', glow: 'rgba(251,146,60,0.25)' },
     { name: 'DeepSeek', icon: <LogoImage src={deepSeekLogoUrl} />, color: 'text-white', bg: 'bg-blue-500/10', border: 'border-blue-500/30', glow: 'rgba(96,165,250,0.25)' },
     { name: 'Cursor', icon: <LogoImage src={cursorLogoUrl} />, color: 'text-white', bg: 'bg-violet-500/10', border: 'border-violet-500/30', glow: 'rgba(167,139,250,0.25)' },
     { name: 'Copilot', icon: <LogoImage src={copilotLogoUrl} />, color: 'text-white', bg: 'bg-emerald-500/10', border: 'border-emerald-500/30', glow: 'rgba(52,211,153,0.25)' },
@@ -280,7 +203,11 @@ const OrbitingAgents = () => {
                   whileHover={{ scale: 1.2 }}
                   className="flex flex-col items-center gap-1.5"
                 >
-                  <div className="cursor-default" title={agent.name}>
+                  <div
+                    className={`w-11 h-11 rounded-full border ${agent.border} ${agent.bg} ${agent.color} flex items-center justify-center backdrop-blur-sm cursor-default`}
+                    style={{ boxShadow: `0 0 16px ${agent.glow}, 0 2px 8px rgba(0,0,0,0.4)` }}
+                    title={agent.name}
+                  >
                     {agent.icon}
                   </div>
                   <span className="text-[9px] font-mono text-zinc-500 whitespace-nowrap select-none">
@@ -315,7 +242,11 @@ const OrbitingAgents = () => {
                   whileHover={{ scale: 1.2 }}
                   className="flex flex-col items-center gap-1.5"
                 >
-                  <div className="cursor-default" title={agent.name}>
+                  <div
+                    className={`w-11 h-11 rounded-full border ${agent.border} ${agent.bg} ${agent.color} flex items-center justify-center backdrop-blur-sm cursor-default`}
+                    style={{ boxShadow: `0 0 16px ${agent.glow}, 0 2px 8px rgba(0,0,0,0.4)` }}
+                    title={agent.name}
+                  >
                     {agent.icon}
                   </div>
                   <span className="text-[9px] font-mono text-zinc-500 whitespace-nowrap select-none">
@@ -333,7 +264,6 @@ const OrbitingAgents = () => {
 
 export default function App() {
   const [demoStep, setDemoStep] = useState(0);
-  const installScriptUrl = getInstallScriptUrl();
 
   const howSteps = [
     {
@@ -425,8 +355,8 @@ export default function App() {
             </p>
 
             <div className="mt-8 gap-4 flex flex-col sm:flex-row justify-center items-center">
-              <a href={installScriptUrl} aria-label="Download agentmux install script" className="w-full sm:w-auto bg-green-400 text-zinc-950 font-mono font-bold px-6 py-2.5 rounded hover:bg-green-300 transition-colors shadow-[0_0_20px_rgba(74,222,128,0.2)] inline-block text-center">
-                download install.sh
+              <a href="#install" aria-label="Install agentmux" className="w-full sm:w-auto bg-green-400 text-zinc-950 font-mono font-bold px-6 py-2.5 rounded hover:bg-green-300 transition-colors shadow-[0_0_20px_rgba(74,222,128,0.2)] inline-block text-center">
+                install now
               </a>
               <a href="https://github.com/reviate0/agentmux" target="_blank" rel="noopener noreferrer" aria-label="View agentmux on GitHub" className="w-full sm:w-auto border border-zinc-700 text-zinc-300 font-mono px-6 py-2.5 rounded hover:border-zinc-500 transition-colors bg-zinc-950/50 backdrop-blur-sm inline-block text-center">
                 view on github
@@ -733,44 +663,44 @@ export default function App() {
                 </div>
               </div>
 
-              <a href={installScriptUrl} aria-label="Download the agentmux install script" className="w-full border border-zinc-700 text-zinc-300 font-mono px-6 py-3 rounded hover:border-zinc-500 transition-colors text-center">
+              <button className="w-full border border-zinc-700 text-zinc-300 font-mono px-6 py-3 rounded hover:border-zinc-500 transition-colors">
                 get started
-              </a>
+              </button>
             </div>
 
-            <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-8 flex flex-col overflow-hidden relative">
-              <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-green-400/40 to-transparent" />
+            <div className="bg-zinc-900 border border-green-500/40 relative rounded-xl p-8 flex flex-col overflow-hidden">
+              <div className="absolute inset-0 bg-green-400/5 pointer-events-none"></div>
 
-              <div className="flex items-center justify-between mb-1">
+              <div className="flex items-center justify-between mb-1 relative z-10">
                 <h3 className="text-white font-mono font-bold text-lg">cloud</h3>
-                <span className="bg-zinc-800 text-zinc-300 border border-zinc-700 text-xs font-mono px-2.5 py-1 rounded">coming soon</span>
+                <span className="bg-green-400/10 text-green-400 border border-green-400/20 text-xs font-mono px-2.5 py-1 rounded">coming soon</span>
               </div>
 
-              <div className="flex items-baseline gap-1 mb-6">
+              <div className="flex items-baseline gap-1 mb-6 relative z-10">
                 <span className="text-4xl font-mono font-bold text-white">$9</span>
                 <span className="text-zinc-400 font-mono">/mo</span>
               </div>
 
-              <div className="space-y-4 mb-8 flex-grow">
+              <div className="space-y-4 mb-8 flex-grow relative z-10">
                 <div className="flex items-center gap-3 text-sm text-zinc-300">
-                  <Check className="text-green-400 w-4 h-4 flex-shrink-0" />
+                  <Check className="text-purple-400 w-4 h-4 flex-shrink-0" />
                   <span>Everything in Core</span>
                 </div>
                 <div className="flex items-center gap-3 text-sm text-zinc-300">
-                  <Check className="text-green-400 w-4 h-4 flex-shrink-0" />
+                  <Check className="text-purple-400 w-4 h-4 flex-shrink-0" />
                   <span>Sync across devices</span>
                 </div>
                 <div className="flex items-center gap-3 text-sm text-zinc-300">
-                  <Check className="text-green-400 w-4 h-4 flex-shrink-0" />
+                  <Check className="text-purple-400 w-4 h-4 flex-shrink-0" />
                   <span>Cloud secret management</span>
                 </div>
                 <div className="flex items-center gap-3 text-sm text-zinc-300">
-                  <Check className="text-green-400 w-4 h-4 flex-shrink-0" />
+                  <Check className="text-purple-400 w-4 h-4 flex-shrink-0" />
                   <span>Priority support</span>
                 </div>
               </div>
 
-              <WaitlistModal />
+              <WaitlistForm />
             </div>
           </div>
         </section>
@@ -801,10 +731,9 @@ export default function App() {
           </div>
 
           <nav aria-label="Footer" className="flex items-center gap-6 text-zinc-500 font-mono text-xs">
-            <a href="https://github.com/kiranloka/agentmux-cli" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository" className="hover:text-white transition-colors">GitHub</a>
+            <a href="https://github.com/reviate0/agentmux" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository" className="hover:text-white transition-colors">GitHub</a>
             <a href="#features" aria-label="Features documentation" className="hover:text-white transition-colors">Docs</a>
-            <a href="https://x.com/Kir3nx_" target="_blank" rel="noopener noreferrer" aria-label="Twitter / X profile" className="hover:text-white transition-colors">Twitter</a>
-            <a href="https://linkedin.com/kiranloka" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn profile" className="hover:text-white transition-colors">LinkedIn</a>
+            <a href="https://x.com/reviate0" target="_blank" rel="noopener noreferrer" aria-label="Twitter / X profile" className="hover:text-white transition-colors">Twitter</a>
           </nav>
         </div>
       </footer>

@@ -4,19 +4,11 @@ import { Users, LayoutPanelLeft, Rocket, Check, Folder, Code2, Terminal, Bot, Cp
 import { SiClaude, SiGooglegemini, SiOpenai } from 'react-icons/si';
 import { motion } from 'motion/react';
 
-const DEFAULT_SITE_URL = 'https://agentmux.reviate0.com';
-const getInstallScriptUrl = () => {
-  const origin = typeof window !== 'undefined' ? window.location.origin : DEFAULT_SITE_URL;
-  return `${origin}/install.sh`;
-};
-
 const InstallCommand = () => {
   const [copied, setCopied] = useState(false);
-  const installScriptUrl = getInstallScriptUrl();
-  const installCommand = `curl -fsSL ${installScriptUrl} | bash`;
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(installCommand);
+    navigator.clipboard.writeText('curl -fsSL https://agentmux.reviate0.com/install.sh | bash');
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   };
@@ -25,7 +17,7 @@ const InstallCommand = () => {
     <div className="bg-zinc-900 border border-zinc-700 rounded-lg px-5 py-3 flex items-center justify-between font-mono text-sm max-w-xl mx-auto w-full">
       <div className="flex items-center gap-3 overflow-x-auto text-zinc-200 whitespace-nowrap scrollbar-hide">
         <span className="text-green-400 select-none">$</span>
-        <span>{installCommand}</span>
+        <span>curl -fsSL https://agentmux.reviate0.com/install.sh | bash</span>
       </div>
       <button
         onClick={handleCopy}
@@ -333,7 +325,6 @@ const OrbitingAgents = () => {
 
 export default function App() {
   const [demoStep, setDemoStep] = useState(0);
-  const installScriptUrl = getInstallScriptUrl();
 
   const howSteps = [
     {
@@ -425,8 +416,8 @@ export default function App() {
             </p>
 
             <div className="mt-8 gap-4 flex flex-col sm:flex-row justify-center items-center">
-              <a href={installScriptUrl} aria-label="Download agentmux install script" className="w-full sm:w-auto bg-green-400 text-zinc-950 font-mono font-bold px-6 py-2.5 rounded hover:bg-green-300 transition-colors shadow-[0_0_20px_rgba(74,222,128,0.2)] inline-block text-center">
-                download install.sh
+              <a href="#install" aria-label="Install agentmux" className="w-full sm:w-auto bg-green-400 text-zinc-950 font-mono font-bold px-6 py-2.5 rounded hover:bg-green-300 transition-colors shadow-[0_0_20px_rgba(74,222,128,0.2)] inline-block text-center">
+                install now
               </a>
               <a href="https://github.com/reviate0/agentmux" target="_blank" rel="noopener noreferrer" aria-label="View agentmux on GitHub" className="w-full sm:w-auto border border-zinc-700 text-zinc-300 font-mono px-6 py-2.5 rounded hover:border-zinc-500 transition-colors bg-zinc-950/50 backdrop-blur-sm inline-block text-center">
                 view on github
@@ -733,9 +724,9 @@ export default function App() {
                 </div>
               </div>
 
-              <a href={installScriptUrl} aria-label="Download the agentmux install script" className="w-full border border-zinc-700 text-zinc-300 font-mono px-6 py-3 rounded hover:border-zinc-500 transition-colors text-center">
+              <button className="w-full border border-zinc-700 text-zinc-300 font-mono px-6 py-3 rounded hover:border-zinc-500 transition-colors">
                 get started
-              </a>
+              </button>
             </div>
 
             <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-8 flex flex-col overflow-hidden relative">
@@ -801,10 +792,9 @@ export default function App() {
           </div>
 
           <nav aria-label="Footer" className="flex items-center gap-6 text-zinc-500 font-mono text-xs">
-            <a href="https://github.com/kiranloka/agentmux-cli" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository" className="hover:text-white transition-colors">GitHub</a>
+            <a href="https://github.com/reviate0/agentmux" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository" className="hover:text-white transition-colors">GitHub</a>
             <a href="#features" aria-label="Features documentation" className="hover:text-white transition-colors">Docs</a>
-            <a href="https://x.com/Kir3nx_" target="_blank" rel="noopener noreferrer" aria-label="Twitter / X profile" className="hover:text-white transition-colors">Twitter</a>
-            <a href="https://linkedin.com/kiranloka" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn profile" className="hover:text-white transition-colors">LinkedIn</a>
+            <a href="https://x.com/reviate0" target="_blank" rel="noopener noreferrer" aria-label="Twitter / X profile" className="hover:text-white transition-colors">Twitter</a>
           </nav>
         </div>
       </footer>
