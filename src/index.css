@@ -1,0 +1,86 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    @apply m-0 bg-zinc-950 text-zinc-300 font-sans antialiased;
+  }
+}
+
+@keyframes agentmux-marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes orbit-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes orbit-spin-reverse {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+@layer utilities {
+  .agentmux-mask-fade-x {
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      black 10%,
+      black 90%,
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      black 10%,
+      black 90%,
+      transparent 100%
+    );
+  }
+
+  .agentmux-marquee {
+    animation: agentmux-marquee 26s linear infinite;
+    will-change: transform;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .agentmux-marquee {
+      animation: none;
+      transform: none;
+    }
+  }
+
+  .animate-orbit-inner {
+    animation: orbit-spin 28s linear infinite;
+  }
+  .animate-orbit-inner-reverse {
+    animation: orbit-spin-reverse 28s linear infinite;
+  }
+  .animate-orbit-outer {
+    animation: orbit-spin-reverse 40s linear infinite;
+  }
+  .animate-orbit-outer-reverse {
+    animation: orbit-spin 40s linear infinite;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
