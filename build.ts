@@ -28,7 +28,7 @@ const staticFiles = [
   "src/robots.txt",
   "src/sitemap.xml",
   "src/og-image.png",
-  "../agent-cli/install.sh",
+  "install.sh",
 ];
 for (const file of staticFiles) {
   const src = path.join(process.cwd(), file);
