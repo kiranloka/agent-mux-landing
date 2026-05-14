@@ -1,0 +1,15 @@
+{
+  "installCommand": "bun install",
+  "buildCommand": "bun run build",
+  "outputDirectory": "dist",
+  "rewrites": [
+    {
+      "source": "/docs",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/((?!api/|install\\.sh|robots\\.txt|sitemap\\.xml|og-image\\.png|.*\\..*).*)",
+      "destination": "/index.html"
+    }
+  ]
+}
