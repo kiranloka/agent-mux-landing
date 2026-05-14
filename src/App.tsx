@@ -3,17 +3,11 @@ import React, { useState, useEffect } from 'react';
 import { Users, LayoutPanelLeft, Rocket, Check, Folder, Code2, Terminal, Bot, Cpu, Boxes, X } from 'lucide-react';
 import { SiClaude, SiGooglegemini, SiOpenai } from 'react-icons/si';
 import { motion } from 'motion/react';
-
-const DEFAULT_SITE_URL = 'https://agentmux.reviate0.com';
-const getInstallScriptUrl = () => {
-  const origin = typeof window !== 'undefined' ? window.location.origin : DEFAULT_SITE_URL;
-  return `${origin}/install.sh`;
-};
+import { getInstallCommand, getInstallScriptUrl } from './install';
 
 const InstallCommand = () => {
   const [copied, setCopied] = useState(false);
-  const installScriptUrl = getInstallScriptUrl();
-  const installCommand = `curl -fsSL ${installScriptUrl} | bash`;
+  const installCommand = getInstallCommand();
 
   const handleCopy = () => {
     navigator.clipboard.writeText(installCommand);
@@ -802,7 +796,7 @@ export default function App() {
 
           <nav aria-label="Footer" className="flex items-center gap-6 text-zinc-500 font-mono text-xs">
             <a href="https://github.com/kiranloka/agentmux-cli" target="_blank" rel="noopener noreferrer" aria-label="GitHub repository" className="hover:text-white transition-colors">GitHub</a>
-            <a href="#features" aria-label="Features documentation" className="hover:text-white transition-colors">Docs</a>
+            <a href="/docs" aria-label="Agentmux documentation" className="hover:text-white transition-colors">Docs</a>
             <a href="https://x.com/Kir3nx_" target="_blank" rel="noopener noreferrer" aria-label="Twitter / X profile" className="hover:text-white transition-colors">Twitter</a>
             <a href="https://linkedin.com/kiranloka" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn profile" className="hover:text-white transition-colors">LinkedIn</a>
           </nav>

@@ -9,11 +9,14 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App";
+import DocsPage from "./DocsPage";
 
 const elem = document.getElementById("root")!;
+const pathname = window.location.pathname.replace(/\/+$/, "") || "/";
+const Page = pathname === "/docs" ? DocsPage : App;
 const app = (
   <StrictMode>
-    <App />
+    <Page />
   </StrictMode>
 );
 
